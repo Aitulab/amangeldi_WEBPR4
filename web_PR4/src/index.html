@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏰 Генератор Приключений</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0b1b2e, #1e3a5f, #2c5364);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.container {
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(16px);
+    padding: 40px 35px;
+    border-radius: 24px;
+    width: 95%;
+    max-width: 560px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+h2 {
+    margin: 0 0 8px 0;
+    font-size: 32px;
+    background: linear-gradient(90deg, #ffd166, #ff6a00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#adventure-text {
+    font-style: italic;
+    font-size: 21px;
+    line-height: 1.45;
+    margin: 30px 0;
+    min-height: 110px;
+    color: #ffd166;
+    transition: all 0.5s ease;
+    text-shadow: 0 2px 10px rgba(255,209,102,0.3);
+}
+.fade {
+    opacity: 0;
+    transform: translateY(20px);
+}
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+button {
+    border: none;
+    padding: 14px 28px;
+    font-size: 17px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.primary-btn {
+    background: linear-gradient(45deg, #ff9a00, #ff4d00);
+    color: white;
+}
+.primary-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(255, 106, 0, 0.5);
+}
+.secondary-btn {
+    background: linear-gradient(45deg, #5a6b7a, #8a9eb0);
+    color: white;
+}
+.secondary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(140,160,190,0.3);
+}
+.log {
+    text-align: left;
+    background: rgba(0,0,0,0.4);
+    padding: 16px;
+    border-radius: 14px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 14.5px;
+    color: #c8d4e0;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.log p {
+    margin: 8px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    animation: fadeIn 0.5s ease forwards;
+}
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateX(-10px);}
+    to {opacity: 1; transform: translateX(0);}
+}
+.footer {
+    margin-top: 20px;
+    font-size: 13px;
+    opacity: 0.65;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>🏰 Генератор Эпических Приключений</h2>
+    <p>Нажми кнопку — и твоя легенда начнётся...</p>
+    
+    <div id="adventure-text">Ваша история ждёт своего героя...</div>
+    
+    <div class="buttons">
+        <button class="primary-btn" onclick="generateAdventure()">⚔️ Новое приключение</button>
+        <button class="secondary-btn" onclick="clearLog()">🧹 Очистить журнал</button>
+    </div>
+
+    <h3>📜 Журнал приключений:</h3>
+    <div id="log" class="log"></div>
+    
+    <div class="footer">✨ Каждое приключение — уникально. Судьба не повторяется.</div>
+</div>
+
+<script>
+const heroes = ["Отважный рыцарь", "Мудрая волшебница", "Хитрый вор-теневик", "Гном-изобретатель", "Лесной эльф-лучник", "Берсерк из северных земель", "Жрица древних богов", "Проклятый некромант", "Странствующий бард", "Драконид-воин"];
+const locations = ["в заброшенном древнем замке", "в заколдованном тёмном лесу", "на вершине ледяной горы", "в глубокой хрустальной пещере", "в парящем небесном городе", "в затонувшем подводном храме", "в проклятой деревне у болота", "в руинах древней эльфийской столицы", "на огненных равнинах вулкана", "в лабиринте зеркал иллюзий"];
+const enemies = ["свирепым древним драконом", "армией оживших скелетов", "коварным мимиком-лордом", "демоном-искусителем из Бездны", "бандой кровожадных разбойников", "теневым повелителем", "гигантским ледяным троллем", "королевой пауков", "падшим ангелом", "безумным големом-стражем"];
+const quests = ["ищет потерянный артефакт", "пытается снять древнее проклятие", "должен спасти похищенного принца/принцессу", "разгадывает пророчество о конце света", "ищет легендарное оружие", "пытается закрыть портал в иной мир", "хочет отомстить за уничтоженную деревню", "должен победить в великом турнире"];
+const twists = ["но неожиданно обнаруживает, что враг — его давно потерянный родственник", "но на самом деле это всё было испытанием богов", "но артефакт пробуждает в нём скрытую силу", "но помощь приходит от бывшего врага", "но время начинает идти вспять", "но герой понимает, что сам является частью пророчества", "но враг предлагает сделку, от которой трудно отказаться", "но в конце битвы открывается ещё большая угроза"];
+
+const adventureDisplay = document.getElementById('adventure-text');
+const logDisplay = document.getElementById('log');
+
+function animateTextChange(newText) {
+    adventureDisplay.classList.add("fade");
+    setTimeout(() => {
+        adventureDisplay.textContent = newText;
+        adventureDisplay.classList.remove("fade");
+    }, 300);
+}
+
+function generateAdventure() {
+    const hero = heroes[Math.floor(Math.random() * heroes.length)];
+    const location = locations[Math.floor(Math.random() * locations.length)];
+    const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+    const quest = quests[Math.floor(Math.random() * quests.length)];
+    const twist = twists[Math.floor(Math.random() * twists.length)];
+
+    const story = `Ваш персонаж — ${hero} — ${location} ${quest} с ${enemy}. ${twist}.`;
+
+    animateTextChange(story);
+
+    const entry = document.createElement('p');
+    const time = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+    entry.innerHTML = `<strong>[${time}]</strong> ${story}`;
+    logDisplay.prepend(entry);
+
+    // Авто-скролл вверх
+    logDisplay.scrollTop = 0;
+}
+
+function clearLog() {
+    if (confirm("Очистить весь журнал приключений?")) {
+        logDisplay.innerHTML = "";
+    }
+}
+
+// Первое случайное приключение при загрузке
+window.onload = () => {
+    setTimeout(generateAdventure, 600);
+};
+</script>
+</body>
+</html>
